@@ -17,19 +17,22 @@ class CommitteeCitizenInitiativeNotificationMessageTest extends AbstractEventMes
         $recipients[] = $this->createAdherentMock('ml@example.com', 'Marie', 'Lambert');
         $recipients[] = $this->createAdherentMock('ez@example.com', 'Éric', 'Zitrone');
 
+        $citizenInitiative = $this->createCitizenInitiativeMock(
+            'En Marche Lyon',
+            '2017-02-01 15:30:00',
+            '15 allées Paul Bocuse',
+            '69006-69386',
+            'en-marche-lyon',
+            $this->createAdherentMock('jb@exemple.com', 'Jean', 'Baptiste')
+        );
+        $citizenInitiative->expects($this->once())->method('getDescription')->willReturn('En Marche à Lyon');
+
         $message = CommitteeCitizenInitiativeNotificationMessage::create(
             $recipients,
             $this->createCommitteeFeedItemMock(
                 $this->createAdherentMock('kl@exemple.com', 'Kévin', 'Lafont'),
                 'Cette initiative est superbe !',
-                $this->createCitizenInitiativeMock(
-                    'En Marche Lyon',
-                    '2017-02-01 15:30:00',
-                    '15 allées Paul Bocuse',
-                    '69006-69386',
-                    'en-marche-lyon',
-                    $this->createAdherentMock('jb@exemple.com', 'Jean', 'Baptiste')
-                )
+                $citizenInitiative
             ),
             self::SHOW_CITIZEN_INITIATIVE_URL,
             self::ATTEND_CITIZEN_INITIATIVE_URL
@@ -39,11 +42,12 @@ class CommitteeCitizenInitiativeNotificationMessageTest extends AbstractEventMes
         $this->assertSame('196519', $message->getTemplate());
         $this->assertCount(4, $message->getRecipients());
         $this->assertSame('Des nouvelles de votre comité', $message->getSubject());
-        $this->assertCount(6, $message->getVars());
+        $this->assertCount(7, $message->getVars());
         $this->assertSame(
             [
                 'animator_firstname' => 'Kévin',
                 'IC_name' => 'En Marche Lyon',
+                'IC_description' => 'En Marche à Lyon',
                 'IC_date' => 'mercredi 1 février 2017',
                 'IC_hour' => '15h30',
                 'IC_address' => '15 allées Paul Bocuse, 69006 Lyon 6e',
@@ -60,6 +64,7 @@ class CommitteeCitizenInitiativeNotificationMessageTest extends AbstractEventMes
             [
                 'animator_firstname' => 'Kévin',
                 'IC_name' => 'En Marche Lyon',
+                'IC_description' => 'En Marche à Lyon',
                 'IC_date' => 'mercredi 1 février 2017',
                 'IC_hour' => '15h30',
                 'IC_address' => '15 allées Paul Bocuse, 69006 Lyon 6e',
@@ -77,6 +82,7 @@ class CommitteeCitizenInitiativeNotificationMessageTest extends AbstractEventMes
             [
                 'animator_firstname' => 'Kévin',
                 'IC_name' => 'En Marche Lyon',
+                'IC_description' => 'En Marche à Lyon',
                 'IC_date' => 'mercredi 1 février 2017',
                 'IC_hour' => '15h30',
                 'IC_address' => '15 allées Paul Bocuse, 69006 Lyon 6e',

@@ -36,27 +36,23 @@ final class CommitteeCitizenInitiativeNotificationMessage extends Message
             throw new \RuntimeException('Citizen initiative not found for feed item "'.$feedItem->getId().'".');
         }
 
-        $vars = static::getTemplateVars(
-            $feedItem->getAuthorFirstName(),
-            $citizenInitiative->getName(),
-            $citizenInitiative->getDesription(),
-            self::formatDate($citizenInitiative->getBeginAt(), 'EEEE d MMMM y'),
-            sprintf(
-                '%sh%s',
-                self::formatDate($citizenInitiative->getBeginAt(), 'HH'),
-                self::formatDate($citizenInitiative->getBeginAt(), 'mm')
-            ),
-            $citizenInitiative->getInlineFormattedAddress(),
-            $citizenInitiativeLink
-        );
-
         $message = new self(
             Uuid::uuid4(),
-            '196519',
             $recipient->getEmailAddress(),
             $recipient->getFullName(),
-            'Des nouvelles de votre comité',
-            $vars,
+            static::getTemplateVars(
+                $feedItem->getAuthorFirstName(),
+                $citizenInitiative->getName(),
+                $citizenInitiative->getDescription(),
+                self::formatDate($citizenInitiative->getBeginAt(), 'EEEE d MMMM y'),
+                sprintf(
+                    '%sh%s',
+                    self::formatDate($citizenInitiative->getBeginAt(), 'HH'),
+                    self::formatDate($citizenInitiative->getBeginAt(), 'mm')
+                ),
+                $citizenInitiative->getInlineFormattedAddress(),
+                $citizenInitiativeLink
+            ),
             static::getRecipientVars($recipient->getFirstName()),
             $feedItem->getAuthor()->getEmailAddress()
         );
@@ -103,19 +99,5 @@ final class CommitteeCitizenInitiativeNotificationMessage extends Message
         return [
             'prenom' => self::escape($firstName),
         ];
-    }
-
-    private static function formatDate(\DateTime $date, string $format): string
-    {
-        $formatter = new \IntlDateFormatter(
-            'fr_FR',
-            \IntlDateFormatter::NONE,
-            \IntlDateFormatter::NONE,
-            $date->getTimezone(),
-            \IntlDateFormatter::GREGORIAN,
-            $format
-        );
-
-        return $formatter->format($date);
     }
 }

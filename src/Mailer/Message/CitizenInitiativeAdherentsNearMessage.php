@@ -35,32 +35,23 @@ final class CitizenInitiativeAdherentsNearMessage extends Message
             throw new \RuntimeException('First recipient must be an Adherent instance.');
         }
 
-        $vars = self::getTemplateVars(
-            $organizer->getFirstName(),
-            $organizer->getLastName(),
-            $citizenInitiative->getName(),
-            self::formatDate($citizenInitiative->getBeginAt(), 'EEEE d MMMM y'),
-            sprintf(
-                '%sh%s',
-                self::formatDate($citizenInitiative->getBeginAt(), 'HH'),
-                self::formatDate($citizenInitiative->getBeginAt(), 'mm')
-            ),
-            $citizenInitiative->getInlineFormattedAddress(),
-            $citizenInitiativeLink
-        );
-
         $message = new static(
             Uuid::uuid4(),
-            '196480',
             $recipient->getEmailAddress(),
             $recipient->getFullName(),
-            sprintf(
-                '%s - %s : Nouvelle initiative citoyenne : %s',
-                self::formatDate($citizenInitiative->getBeginAt(), 'd MMMM'),
-                $vars['IC_hour'],
-                $vars['IC_name']
+            self::getTemplateVars(
+                $organizer->getFirstName(),
+                $organizer->getLastName(),
+                $citizenInitiative->getName(),
+                self::formatDate($citizenInitiative->getBeginAt(), 'EEEE d MMMM y'),
+                sprintf(
+                    '%sh%s',
+                    self::formatDate($citizenInitiative->getBeginAt(), 'HH'),
+                    self::formatDate($citizenInitiative->getBeginAt(), 'mm')
+                ),
+                $citizenInitiative->getInlineFormattedAddress(),
+                $citizenInitiativeLink
             ),
-            $vars,
             $recipientVarsGenerator($recipient),
             $organizer->getEmailAddress()
         );
@@ -103,19 +94,5 @@ final class CitizenInitiativeAdherentsNearMessage extends Message
         return [
             'prenom' => self::escape($firstName),
         ];
-    }
-
-    private static function formatDate(\DateTime $date, string $format): string
-    {
-        $formatter = new \IntlDateFormatter(
-            'fr_FR',
-            \IntlDateFormatter::NONE,
-            \IntlDateFormatter::NONE,
-            $date->getTimezone(),
-            \IntlDateFormatter::GREGORIAN,
-            $format
-        );
-
-        return $formatter->format($date);
     }
 }

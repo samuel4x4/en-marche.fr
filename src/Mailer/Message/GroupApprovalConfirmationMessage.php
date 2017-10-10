@@ -11,10 +11,8 @@ final class GroupApprovalConfirmationMessage extends Message
     {
         return new self(
             Uuid::uuid4(),
-            '54720', // TODO change ID
             $administrator->getEmailAddress(),
             $administrator->getFullName(),
-            'Votre équipe MOOC est validée, à vous de jouer',
             static::getTemplateVars($groupCityName, $groupUrl),
             static::getRecipientVars($administrator->getFirstName())
         );

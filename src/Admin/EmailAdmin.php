@@ -16,6 +16,19 @@ class EmailAdmin extends AbstractAdmin
         '_sort_by' => 'createdAt',
     ];
 
+    public function getDashboardActions()
+    {
+        $actions = parent::getDashboardActions();
+
+        $actions['template'] = [
+            'label' => 'Templates',
+            'url' => $this->routeGenerator->generate('app_admin_email_template_list'),
+            'icon' => 'edit',
+        ];
+
+        return $actions;
+    }
+
     protected function configureShowFields(ShowMapper $show)
     {
         $show

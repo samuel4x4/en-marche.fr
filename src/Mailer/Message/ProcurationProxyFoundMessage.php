@@ -18,10 +18,8 @@ final class ProcurationProxyFoundMessage extends Message
     ): self {
         $message = new self(
             Uuid::uuid4(),
-            '120187',
             $request->getEmailAddress(),
             null,
-            'Votre procuration',
             [
                 'target_firstname' => self::escape($request->getFirstNames()),
                 'info_link' => $infosUrl,

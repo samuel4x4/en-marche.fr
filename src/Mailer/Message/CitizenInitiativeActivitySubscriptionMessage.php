@@ -35,30 +35,23 @@ final class CitizenInitiativeActivitySubscriptionMessage extends Message
             throw new \RuntimeException('First recipient must be an Adherent instance.');
         }
 
-        $vars = self::getTemplateVars(
-            $organizer->getFirstName(),
-            $organizer->getLastName(),
-            $citizenInitiative->getName(),
-            self::formatDate($citizenInitiative->getBeginAt(), 'EEEE d MMMM y'),
-            sprintf(
-                '%sh%s',
-                self::formatDate($citizenInitiative->getBeginAt(), 'HH'),
-                self::formatDate($citizenInitiative->getBeginAt(), 'mm')
-            ),
-            $citizenInitiative->getInlineFormattedAddress(),
-            $citizenInitiativeLink
-        );
-
         $message = new static(
             Uuid::uuid4(),
-            '196524',
             $recipient->getEmailAddress(),
             $recipient->getFullName(),
-            sprintf(
-                'Nouvelle initiative citoyenne : %s',
-                $vars['IC_name']
+            self::getTemplateVars(
+                $organizer->getFirstName(),
+                $organizer->getLastName(),
+                $citizenInitiative->getName(),
+                self::formatDate($citizenInitiative->getBeginAt(), 'EEEE d MMMM y'),
+                sprintf(
+                    '%sh%s',
+                    self::formatDate($citizenInitiative->getBeginAt(), 'HH'),
+                    self::formatDate($citizenInitiative->getBeginAt(), 'mm')
+                ),
+                $citizenInitiative->getInlineFormattedAddress(),
+                $citizenInitiativeLink
             ),
-            $vars,
             $recipientVarsGenerator($recipient),
             $organizer->getEmailAddress()
         );
@@ -75,7 +68,7 @@ final class CitizenInitiativeActivitySubscriptionMessage extends Message
         return $message;
     }
 
-    private static function getTemplateVars(
+    public static function getTemplateVars(
         string $organizerFirstName,
         string $organizerLastName,
         string $citizenInitiativeName,
@@ -101,19 +94,5 @@ final class CitizenInitiativeActivitySubscriptionMessage extends Message
         return [
             'prenom' => self::escape($firstName),
         ];
-    }
-
-    private static function formatDate(\DateTime $date, string $format): string
-    {
-        $formatter = new \IntlDateFormatter(
-            'fr_FR',
-            \IntlDateFormatter::NONE,
-            \IntlDateFormatter::NONE,
-            $date->getTimezone(),
-            \IntlDateFormatter::GREGORIAN,
-            $format
-        );
-
-        return $formatter->format($date);
     }
 }

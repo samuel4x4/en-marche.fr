@@ -12,10 +12,8 @@ final class CitizenInitiativeOrganizerValidationMessage extends Message
     {
         return new self(
             Uuid::uuid4(),
-            '196469',
             $recipient->getEmailAddress(),
             $recipient->getFullName(),
-            'Validation de votre initiative citoyenne',
             self::getTemplateVars(
                 $initiative->getName(),
                 self::formatDate($initiative->getBeginAt(), 'EEEE d MMMM y'),
@@ -49,19 +47,5 @@ final class CitizenInitiativeOrganizerValidationMessage extends Message
         return [
             'prenom' => self::escape($firstName),
         ];
-    }
-
-    private static function formatDate(\DateTime $date, string $format): string
-    {
-        $formatter = new \IntlDateFormatter(
-            'fr_FR',
-            \IntlDateFormatter::NONE,
-            \IntlDateFormatter::NONE,
-            $date->getTimezone(),
-            \IntlDateFormatter::GREGORIAN,
-            $format
-        );
-
-        return $formatter->format($date);
     }
 }

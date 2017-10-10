@@ -11,21 +11,14 @@ final class AdherentAccountActivationMessage extends Message
     {
         return new self(
             Uuid::uuid4(),
-            '54665',
             $adherent->getEmailAddress(),
             $adherent->getFullName(),
-            'Plus qu\'une étape',
-            static::getTemplateVars(),
-            static::getRecipientVars($adherent->getFirstName(), $confirmationLink)
+            [],
+            static::getRecipientVars(
+                $adherent->getFirstName(),
+                $confirmationLink
+            )
         );
-    }
-
-    private static function getTemplateVars(): array
-    {
-        return [
-            'target_firstname' => '',
-            'confirmation_link' => '',
-        ];
     }
 
     private static function getRecipientVars(string $firstName, string $confirmationLink): array

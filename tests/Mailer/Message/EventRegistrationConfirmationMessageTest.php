@@ -31,6 +31,9 @@ class EventRegistrationConfirmationMessageTest extends AbstractEventMessageTest
         $this->assertSame(
             [
                 'event_name' => 'Grand Meeting de Paris',
+                'event_date' => 'mercredi 1 février 2017',
+                'event_hour' => '15h30',
+                'event_address' => 'Palais des Congrés Porte Maillot, 75001 Paris 1er',
                 'event_organiser' => 'Michelle',
                 'event_link' => self::EVENT_LINK,
             ],
@@ -42,6 +45,9 @@ class EventRegistrationConfirmationMessageTest extends AbstractEventMessageTest
         $this->assertSame(
             [
                 'event_name' => 'Grand Meeting de Paris',
+                'event_date' => 'mercredi 1 février 2017',
+                'event_hour' => '15h30',
+                'event_address' => 'Palais des Congrés Porte Maillot, 75001 Paris 1er',
                 'event_organiser' => 'Michelle',
                 'event_link' => self::EVENT_LINK,
                 'prenom' => 'John',

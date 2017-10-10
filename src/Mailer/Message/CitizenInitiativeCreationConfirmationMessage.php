@@ -14,10 +14,8 @@ final class CitizenInitiativeCreationConfirmationMessage extends Message
 
         return new self(
             Uuid::uuid4(),
-            '196483',
             $author->getEmailAddress(),
             $author->getFirstName(),
-            'Votre initiative En Marche en attente de validation',
             static::getTemplateVars($initiative->getName()),
             static::getRecipientVars($author->getFirstName())
         );

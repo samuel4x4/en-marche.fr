@@ -12,10 +12,8 @@ final class CommitteeCitizenInitiativeOrganizerNotificationMessage extends Messa
     {
         $message = new self(
             Uuid::uuid4(),
-            '196522',
             $recipient->getEmailAddress(),
             $recipient->getFullName(),
-            'Votre initiative citoyenne a été partagée',
             static::getTemplateVars(
                 $feedItem->getAuthor()->getFirstName(),
                 $feedItem->getAuthor()->getLastName(),

@@ -15,10 +15,8 @@ final class CitizenInitiativeRegistrationConfirmationMessage extends Message
 
         return new self(
             Uuid::uuid4(),
-            '212744',
             $registration->getEmailAddress(),
             $firstName,
-            'Confirmation de participation à une initiative citoyenne En Marche !',
             static::getTemplateVars(
                 $event->getName(),
                 $organizer->getFirstName(),
