@@ -13,6 +13,7 @@ final class Events
     const CITIZEN_INITIATIVE_VALIDATED = 'citizen_initiative_validated';
     const CITIZEN_INITIATIVE_UPDATED = 'citizen_initiativeupdated';
     const CITIZEN_INITIATIVE_CANCELLED = 'citizen_initiativecancelled';
+    const MOOC_EVENT_VALIDATED = 'mooc_event_validated';
 
     private function __construct()
     {

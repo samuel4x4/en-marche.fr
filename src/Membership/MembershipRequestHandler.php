@@ -16,6 +16,7 @@ use AppBundle\Event\EventRegistrationManager;
 use AppBundle\Mailjet\MailjetService;
 use AppBundle\Mailjet\Message\AdherentAccountActivationMessage;
 use AppBundle\Mailjet\Message\AdherentTerminateMembershipMessage;
+use AppBundle\MoocEvent\MoocEventManager;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -31,6 +32,7 @@ class MembershipRequestHandler
     private $committeeManager;
     private $registrationManager;
     private $citizenInitiativeManager;
+    private $moocEventManager;
     private $eventManager;
     private $committeeFeedManager;
     private $activitySubscriptionManager;
@@ -45,6 +47,7 @@ class MembershipRequestHandler
         CommitteeManager $committeeManager,
         EventRegistrationManager $registrationManager,
         CitizenInitiativeManager $citizenInitiativeManager,
+        MoocEventManager $moocEventManager,
         EventManager $eventManager,
         CommitteeFeedManager $committeeFeedManager,
         ActivitySubscriptionManager $activitySubscriptionManager
@@ -58,6 +61,7 @@ class MembershipRequestHandler
         $this->committeeManager = $committeeManager;
         $this->registrationManager = $registrationManager;
         $this->citizenInitiativeManager = $citizenInitiativeManager;
+        $this->moocEventManager = $moocEventManager;
         $this->committeeFeedManager = $committeeFeedManager;
         $this->eventManager = $eventManager;
         $this->activitySubscriptionManager = $activitySubscriptionManager;
@@ -109,6 +113,7 @@ class MembershipRequestHandler
         $summary = $this->manager->getRepository(Summary::class)->findOneForAdherent($adherent);
 
         $this->removeAdherentMemberShips($adherent);
+        $this->moocEventManager->removeOrganizerMoocEvents($adherent);
         $this->citizenInitiativeManager->removeOrganizerCitizenInitiatives($adherent);
         $this->eventManager->removeOrganizerEvents($adherent);
         $this->registrationManager->anonymizeAdherentRegistrations($adherent);

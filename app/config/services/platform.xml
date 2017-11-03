@@ -75,6 +75,7 @@
             <argument type="service" id="app.committee.manager"/>
             <argument type="service" id="app.event.registration_manager"/>
             <argument type="service" id="AppBundle\CitizenInitiative\CitizenInitiativeManager"/>
+            <argument type="service" id="AppBundle\MoocEvent\MoocEventManager"/>
             <argument type="service" id="AppBundle\Event\EventManager"/>
             <argument type="service" id="app.committee.feed_manager"/>
             <argument type="service" id="app.activity_subscription.manager"/>
@@ -343,6 +344,13 @@
             <argument type="service" id="router" />
             <argument type="service" id="security.token_storage" />
             <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <!-- MoocEvents -->
+        <service id="AppBundle\MoocEvent\MoocEventManager">
+            <argument type="service" id="doctrine.orm.entity_manager" />
+            <argument type="service" id="event_dispatcher"/>
+            <argument type="service" id="app.repository.mooc_event"/>
         </service>
 
         <!-- Referents -->
