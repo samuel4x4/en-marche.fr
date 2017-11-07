@@ -1,0 +1,46 @@
+<aside class="group__aside l__wrapper--aside">
+    <div class="group__card b__nudge--top-large text--medium-small text--uppercase icon--with-text">
+        {{ include('components/participants.html.twig') }}
+        <span class="group-members">{{ 'group.members_count'|transchoice(group.membersCount) }}</span>
+    </div>
+    <div class="group__card">
+        <h5>À propos</h5>
+        <div class="text--body" id="group-description">{{ group.description }}</div>
+    </div>
+    <div class="group__card">
+        <h5 class="icon--with-text">
+            {{ include('components/admin.html.twig') }}
+            Administration
+        </h5>
+        <ul class="group__administrators">
+            {% for administrator in group_administrators %}
+                <li class="group-administrator text--body text--bold">
+                    {{ administrator }}
+                    {% if is_administrator and app.user.equals(administrator) %}
+                        (vous)
+                    {% else %}
+                        <a href="{{ path('app_adherent_contact', {'uuid': administrator.uuid, 'from': 'group', 'id': group.uuid.toString}) }}"
+                           class="link--no-decor text--blue text--normal text--summary">
+                            Contacter
+                        </a>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="group__card">
+        <h5 class="icon--with-text svg--black">
+            {{ include('components/location-pin.html.twig') }}
+            Localisation
+        </h5>
+
+        {% if group.latitude and group.longitude %}
+        <img src="{{ path('map_url', { latitude: group.latitude, longitude: group.longitude }) }}"
+             title="Carte d'accès au comité {{ group.name }}"
+             alt="{{ group.inlineFormattedAddress }}" />
+        {% endif %}
+
+        <div class="text--summary">{{ group.inlineFormattedAddress }}</div>
+    </div>
+
+</aside>

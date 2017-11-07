@@ -223,10 +223,6 @@
             <tag name="security.voter"/>
         </service>
 
-        <service id="app.voter.organizer_citizen_initiative_voter" class="AppBundle\CitizenInitiative\Voter\OrganizerCitizenInitiativeVoter" public="false">
-            <tag name="security.voter"/>
-        </service>
-
         <!-- Groups -->
         <service id="app.group.manager" class="AppBundle\Group\GroupManager">
             <argument type="service" id="doctrine"/>
@@ -256,6 +252,22 @@
 
         <service id="app.voter.show_group_voter" class="AppBundle\Group\Voter\ShowGroupVoter" public="false">
             <tag name="security.voter"/>
+        </service>
+
+        <service id="app.voter.administrate_group_voter" class="AppBundle\Group\Voter\AdministrateGroupVoter" public="false">
+            <argument type="service" id="app.group.manager"/>
+            <tag name="security.voter" priority="-1000"/>
+        </service>
+
+        <service id="app.voter.follow_group_voter" class="AppBundle\Group\Voter\FollowGroupVoter" public="false">
+            <argument type="service" id="app.group.manager"/>
+            <tag name="security.voter"/>
+        </service>
+
+        <service id="app.group.update_handler" class="AppBundle\Group\GroupUpdateCommandHandler">
+            <argument type="service" id="event_dispatcher"/>
+            <argument type="service" id="doctrine.orm.entity_manager"/>
+            <argument type="service" id="app.address.post_address_factory"/>
         </service>
 
         <!-- Events -->
@@ -354,6 +366,10 @@
             <argument type="service" id="router" />
             <argument type="service" id="security.token_storage" />
             <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="app.voter.organizer_citizen_initiative_voter" class="AppBundle\CitizenInitiative\Voter\OrganizerCitizenInitiativeVoter" public="false">
+            <tag name="security.voter"/>
         </service>
 
         <!-- Referents -->
