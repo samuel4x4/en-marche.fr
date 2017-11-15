@@ -8,6 +8,8 @@ use AppBundle\DataFixtures\ORM\LoadHomeBlockData;
 use AppBundle\DataFixtures\ORM\LoadNewsletterSubscriptionData;
 use AppBundle\DataFixtures\ORM\LoadReferentManagedUserData;
 use AppBundle\Entity\Event;
+use AppBundle\Entity\ReferentManagedUsersMessage;
+use AppBundle\Repository\ReferentManagedUsersMessageRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Tests\AppBundle\Controller\ControllerTestTrait;
@@ -20,6 +22,11 @@ use Tests\AppBundle\SqliteWebTestCase;
 class ReferentControllerTest extends SqliteWebTestCase
 {
     use ControllerTestTrait;
+
+    /**
+     * @var ReferentManagedUsersMessageRepository
+     */
+    private $referentMessageRepository;
 
     /**
      * @dataProvider providePages
@@ -204,6 +211,8 @@ class ReferentControllerTest extends SqliteWebTestCase
             'n' => 1,
             'anc' => 1,
             'aic' => 1,
+            'h' => 1,
+            's' => 1,
         ];
         $this->client->submit($this->client->getCrawler()->selectButton('Filtrer')->form(), $data);
         $this->client->click($this->client->getCrawler()->selectLink('Leur envoyer un message')->link());
@@ -220,6 +229,32 @@ class ReferentControllerTest extends SqliteWebTestCase
 
         $this->assertResponseStatusCode(Response::HTTP_OK, $this->client->getResponse());
         $this->assertContains('http://'.$this->hosts['app'].'/espace-referent/utilisateurs?', $this->client->getRequest()->getUri());
+
+        $referentMessages = $this
+            ->referentMessageRepository
+            ->createQueryBuilder('m')
+            ->innerJoin('m.from', 'a')
+            ->addSelect('a')
+            ->getQuery()
+            ->getResult();
+
+        $this->assertCount(1, $referentMessages);
+
+        /* @var ReferentManagedUsersMessage */
+        $message = reset($referentMessages);
+
+        $this->assertSame('referent@en-marche-dev.fr', $message->getFrom()->getEmailAddress());
+        $this->assertSame('Event reminder', $message->getSubject());
+        $this->assertSame('One event is planned.', $message->getContent());
+        $this->assertTrue($message->includeNewsletter());
+        $this->assertTrue($message->includeAdherentsNoCommittee());
+        $this->assertTrue($message->includeAdherentsInCommittee());
+        $this->assertTrue($message->includeHosts());
+        $this->assertTrue($message->includeSupevisors());
+        $this->assertEmpty($message->getQueryPostalCode());
+        $this->assertEmpty($message->getQueryCity());
+        $this->assertEmpty($message->getQueryId());
+        $this->assertSame(0, $message->getOffset());
     }
 
     public function testFilterAdherents()
@@ -342,11 +377,15 @@ class ReferentControllerTest extends SqliteWebTestCase
             LoadNewsletterSubscriptionData::class,
             LoadReferentManagedUserData::class,
         ]);
+
+        $this->referentMessageRepository = $this->manager->getRepository(ReferentManagedUsersMessage::class);
     }
 
     protected function tearDown()
     {
         $this->kill();
+
+        $this->referentMessageRepository = null;
 
         parent::tearDown();
     }
