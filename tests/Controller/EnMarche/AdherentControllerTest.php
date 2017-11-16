@@ -90,16 +90,16 @@ class AdherentControllerTest extends MysqlWebTestCase
 
     public function provideProfilePage()
     {
-        yield ['/espace-adherent/mon-compte', 'Mon compte'];
-        yield ['/espace-adherent/mon-compte/modifier', 'Mes informations personnelles'];
-        yield ['/espace-adherent/mon-compte/preferences-des-emails', 'Notifications'];
+        yield ['/parametres/mon-compte', 'Mon compte'];
+        yield ['/parametres/mon-compte/modifier', 'Mes informations personnelles'];
+        yield ['/parametres/mon-compte/preferences-des-emails', 'Notifications'];
     }
 
     public function testProfileActionIsAccessibleForAdherent()
     {
         $this->authenticateAsAdherent($this->client, 'carl999@example.fr');
 
-        $crawler = $this->client->request(Request::METHOD_GET, '/espace-adherent/mon-compte');
+        $crawler = $this->client->request(Request::METHOD_GET, '/parametres/mon-compte');
 
         $this->assertResponseStatusCode(Response::HTTP_OK, $this->client->getResponse());
         $this->assertCount(1, $current = $crawler->filter('.settings .settings-menu ul li.active a'));
@@ -112,7 +112,7 @@ class AdherentControllerTest extends MysqlWebTestCase
     {
         $this->authenticateAsAdherent($this->client, 'thomas.leclerc@example.ch');
 
-        $crawler = $this->client->request(Request::METHOD_GET, '/espace-adherent/mon-compte');
+        $crawler = $this->client->request(Request::METHOD_GET, '/parametres/mon-compte');
 
         $this->assertResponseStatusCode(Response::HTTP_OK, $this->client->getResponse());
         $this->assertCount(1, $current = $crawler->filter('.settings .settings-menu ul li.active a'));
@@ -129,7 +129,7 @@ class AdherentControllerTest extends MysqlWebTestCase
         $oldLatitude = $adherent->getLatitude();
         $oldLongitude = $adherent->getLongitude();
 
-        $crawler = $this->client->request(Request::METHOD_GET, '/espace-adherent/mon-compte/modifier');
+        $crawler = $this->client->request(Request::METHOD_GET, '/parametres/mon-compte/modifier');
 
         $inputPattern = 'input[name="membership_request[%s]"]';
         $optionPattern = 'select[name="membership_request[%s]"] option[selected="selected"]';
@@ -166,7 +166,7 @@ class AdherentControllerTest extends MysqlWebTestCase
         $this->assertSame(1, $errors->count());
         $this->assertSame('Cette valeur n\'est pas un numéro de téléphone valide.', $errors->eq(0)->text());
 
-        $this->client->request(Request::METHOD_GET, '/espace-adherent/mon-compte');
+        $this->client->request(Request::METHOD_GET, '/parametres/mon-compte');
 
         // Submit the profile form with valid data
         $this->client->submit($crawler->selectButton('membership_request[submit]')->form([
@@ -190,7 +190,7 @@ class AdherentControllerTest extends MysqlWebTestCase
             ],
         ]));
 
-        $this->assertClientIsRedirectedTo('/espace-adherent/mon-compte', $this->client);
+        $this->assertClientIsRedirectedTo('/parametres/mon-compte', $this->client);
 
         $crawler = $this->client->followRedirect();
 
@@ -277,7 +277,7 @@ class AdherentControllerTest extends MysqlWebTestCase
 
         $this->authenticateAsAdherent($this->client, 'carl999@example.fr');
 
-        $crawler = $this->client->request(Request::METHOD_GET, '/espace-adherent/mon-compte/preferences-des-emails');
+        $crawler = $this->client->request(Request::METHOD_GET, '/parametres/mon-compte/preferences-des-emails');
         $subscriptions = $crawler->filter('input[name="adherent_email_subscription[emails_subscriptions][]"]');
 
         $this->assertCount(3, $subscriptions);
@@ -285,7 +285,7 @@ class AdherentControllerTest extends MysqlWebTestCase
         // Submit the emails subscription form with invalid data
         // We need to use a POST request because the crawler does not
         // accept any invalid choice, thus cannot submit invalid form
-        $crawler = $this->client->request(Request::METHOD_POST, '/espace-adherent/mon-compte/preferences-des-emails', [
+        $crawler = $this->client->request(Request::METHOD_POST, '/parametres/mon-compte/preferences-des-emails', [
             'adherent_email_subscription' => [
                 'emails_subscriptions' => ['heah'],
                 '_token' => $crawler->filter('input[name="adherent_email_subscription[_token]"]')->attr('value'),
@@ -308,7 +308,7 @@ class AdherentControllerTest extends MysqlWebTestCase
             ],
         ]);
 
-        $this->assertClientIsRedirectedTo('/espace-adherent/mon-compte/preferences-des-emails', $this->client);
+        $this->assertClientIsRedirectedTo('/parametres/mon-compte/preferences-des-emails', $this->client);
 
         $adherent = $this->getAdherentRepository()->findByEmail('carl999@example.fr');
 
@@ -517,7 +517,7 @@ class AdherentControllerTest extends MysqlWebTestCase
     {
         $this->authenticateAsAdherent($this->client, 'referent@en-marche-dev.fr');
 
-        $crawler = $this->client->request(Request::METHOD_GET, '/espace-adherent/mon-compte');
+        $crawler = $this->client->request(Request::METHOD_GET, '/parametres/mon-compte');
 
         $this->assertStatusCode(Response::HTTP_OK, $this->client);
         $this->assertCount(0, $crawler->filter('.settings_unsubscribe'));
@@ -531,7 +531,7 @@ class AdherentControllerTest extends MysqlWebTestCase
     {
         $this->authenticateAsAdherent($this->client, 'gisele-berthoux@caramail.com');
 
-        $crawler = $this->client->request(Request::METHOD_GET, '/espace-adherent/mon-compte');
+        $crawler = $this->client->request(Request::METHOD_GET, '/parametres/mon-compte');
 
         $this->assertStatusCode(Response::HTTP_OK, $this->client);
         $this->assertCount(0, $crawler->filter('.settings_unsubscribe'));
@@ -548,7 +548,7 @@ class AdherentControllerTest extends MysqlWebTestCase
 
         $this->authenticateAsAdherent($this->client, 'michel.vasseur@example.ch');
 
-        $crawler = $this->client->request(Request::METHOD_GET, '/espace-adherent/mon-compte');
+        $crawler = $this->client->request(Request::METHOD_GET, '/parametres/mon-compte');
 
         $this->assertStatusCode(Response::HTTP_OK, $this->client);
         $this->assertCount(1, $crawler->filter('.settings__delete_account'));
