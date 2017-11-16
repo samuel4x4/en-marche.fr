@@ -268,6 +268,7 @@ class CommitteeMembershipRepository extends EntityRepository
             ->andWhere($qb->expr()->in('cm.privilege', $privileges))
             ->orderBy('cm.joinedAt', 'ASC')
             ->setParameter('committee', (string) $committeeUuid)
+            ->orderBy('cm.privilege', 'DESC')
             ->getQuery()
         ;
 
