@@ -19,7 +19,7 @@ class ManagedUsersFilterTest extends TestCase
         $this->assertSame($expected['includeAdherentsInCommittee'], $filter->includeAdherentsInCommittee());
         $this->assertSame($expected['includeHosts'], $filter->includeHosts());
         $this->assertSame($expected['includeSupervisors'], $filter->includeSupervisors());
-        $this->assertSame($expected['queryPostalCode'], $filter->getQueryPostalCode());
+        $this->assertSame($expected['queryPostalCode'], $filter->getQueryAreaCode());
         $this->assertSame($expected['queryCity'], $filter->getQueryCity());
         $this->assertSame($expected['queryId'], $filter->getQueryId());
         $this->assertSame($expected['offset'], $filter->getOffset());
